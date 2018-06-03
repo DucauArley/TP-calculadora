@@ -37,7 +37,12 @@ int main()
                 break;
             case 2:
                 system("cls");
-                borrarPelicula(pelicula, contadorPeliculas);
+                retorno = borrarPelicula(pelicula, contadorPeliculas);
+                if(retorno == 1)
+                {
+                    contadorPeliculas --
+                    ;
+                }
                 break;
             case 3:
                 system("cls");

@@ -9,7 +9,7 @@ typedef struct
     int duracion;
     char descripcion[100];
     int puntaje;
-    char linkImagen[100];
+    char linkImagen[150];
 }EMovie;
 
 int agregarPelicula(EMovie movie, int contadorPeliculas)
@@ -55,17 +55,16 @@ int agregarPelicula(EMovie movie, int contadorPeliculas)
         fflush(stdin);
         gets(movie.descripcion);
 
-
         archivo = fopen("Movies.txt", "ab");
 
         if(archivo != NULL)
         {
-            fprintf(archivo, "%s,", movie.linkImagen);
-            fprintf(archivo, "%s,", movie.titulo);
-            fprintf(archivo, "%s,", movie.genero);
-            fprintf(archivo, "%d,", movie.puntaje);
-            fprintf(archivo, "%d,", movie.duracion);
-            fprintf(archivo, "%s.", movie.descripcion);
+            fprintf(archivo, "%s*", movie.linkImagen);
+            fprintf(archivo, "%s*", movie.titulo);
+            fprintf(archivo, "%s*", movie.genero);
+            fprintf(archivo, "%d*", movie.puntaje);
+            fprintf(archivo, "%d*", movie.duracion);
+            fprintf(archivo, "%s#", movie.descripcion);
 
             fclose(archivo);
 
@@ -81,12 +80,13 @@ int agregarPelicula(EMovie movie, int contadorPeliculas)
 
 }
 
-void borrarPelicula(EMovie movie, int contadorPeliculas)
+int borrarPelicula(EMovie movie, int contadorPeliculas)
 {
     FILE* archivo;
     EMovie peliculas[50];
     int i;
     int flag = 0;
+    int retorno = 0;
 
     parseDatos("Movies.txt", peliculas, contadorPeliculas);
 
@@ -116,17 +116,19 @@ void borrarPelicula(EMovie movie, int contadorPeliculas)
             {
                 if(!stricmp(movie.titulo, peliculas[i].titulo) == 0)
                 {
-                    fprintf(archivo, "%s,", peliculas[i].linkImagen);
-                    fprintf(archivo, "%s,", peliculas[i].titulo);
-                    fprintf(archivo, "%s,", peliculas[i].genero);
-                    fprintf(archivo, "%d,", peliculas[i].puntaje);
-                    fprintf(archivo, "%d,", peliculas[i].duracion);
-                    fprintf(archivo, "%s.", peliculas[i].descripcion);
+                    fprintf(archivo, "%s*", peliculas[i].linkImagen);
+                    fprintf(archivo, "%s*", peliculas[i].titulo);
+                    fprintf(archivo, "%s*", peliculas[i].genero);
+                    fprintf(archivo, "%d*", peliculas[i].puntaje);
+                    fprintf(archivo, "%d*", peliculas[i].duracion);
+                    fprintf(archivo, "%s#", peliculas[i].descripcion);
                 }
             }
             fclose(archivo);
+            retorno = 1;
         }
     }
+    return retorno;
 }
 
 void modificarPelicula(EMovie movie, int contadorPeliculas)
@@ -210,21 +212,21 @@ void modificarPelicula(EMovie movie, int contadorPeliculas)
             {
                 if(!stricmp(movie.titulo, peliculas[i].titulo) == 0)
                 {
-                    fprintf(archivo, "%s,", peliculas[i].linkImagen);
-                    fprintf(archivo, "%s,", peliculas[i].titulo);
-                    fprintf(archivo, "%s,", peliculas[i].genero);
-                    fprintf(archivo, "%d,", peliculas[i].puntaje);
-                    fprintf(archivo, "%d,", peliculas[i].duracion);
-                    fprintf(archivo, "%s.", peliculas[i].descripcion);
+                    fprintf(archivo, "%s*", peliculas[i].linkImagen);
+                    fprintf(archivo, "%s*", peliculas[i].titulo);
+                    fprintf(archivo, "%s*", peliculas[i].genero);
+                    fprintf(archivo, "%d*", peliculas[i].puntaje);
+                    fprintf(archivo, "%d*", peliculas[i].duracion);
+                    fprintf(archivo, "%s#", peliculas[i].descripcion);
                 }
                 else
                 {
-                    fprintf(archivo, "%s,", movie.linkImagen);
-                    fprintf(archivo, "%s,", movie.titulo);
-                    fprintf(archivo, "%s,", movie.genero);
-                    fprintf(archivo, "%d,", movie.puntaje);
-                    fprintf(archivo, "%d,", movie.duracion);
-                    fprintf(archivo, "%s.", movie.descripcion);
+                    fprintf(archivo, "%s*", movie.linkImagen);
+                    fprintf(archivo, "%s*", movie.titulo);
+                    fprintf(archivo, "%s*", movie.genero);
+                    fprintf(archivo, "%d*", movie.puntaje);
+                    fprintf(archivo, "%d*", movie.duracion);
+                    fprintf(archivo, "%s#", movie.descripcion);
                 }
             }
             fclose(archivo);
@@ -247,34 +249,78 @@ void generarPagina(int contadorPeliculas)
 
     if(archivo != NULL)
     {
+        fprintf(archivo, "<!DOCTYPE html>\n"
+        "<!-- Template by Quackit.com -->\n"
+        "<html lang='en'>\n"
+        "<head>\n"
+        "<meta charset='utf-8'>\n"
+        "<meta http-equiv='X-UA-Compatible' content='IE=edge'>\n"
+        "<meta name='viewport' content='width=device-width, initial-scale=1'>\n"
+        "<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->\n"
+        "<title>Lista peliculas</title>\n"
+        "<!-- Bootstrap Core CSS -->\n"
+        "<link href='css/bootstrap.min.css' rel='stylesheet'>\n"
+        "<!-- Custom CSS: You can use this stylesheet to override any Bootstrap styles and/or apply your own styles -->\n"
+        "<link href='css/custom.css' rel='stylesheet'>\n"
+        "<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->\n"
+        "<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->\n"
+        "<!--[if lt IE 9]>\n"
+        "<script src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js'></script>\n"
+        "<script src='https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js'></script>\n"
+        "<![endif]-->\n"
+        "</head>\n"
+        "<body>\n"
+           "<div class='container'>\n"
+                "<div class='row'>\n");
+
         for(i=0;i<contadorPeliculas;i++)
         {
 
-            fprintf(archivo, "<!-- Repetir esto para cada pelicula -->"
-            "<article class='col-md-4 article-intro'>"
-            "<a href='#'>"
+            fprintf(archivo, "<!-- Repetir esto para cada pelicula -->\n"
+            "<article class='col-md-4 article-intro'>\n"
+            "<a href='#'>\n"
             "<img class='img-responsive img-rounded' src='%s'alt=''>", peliculas[i].linkImagen);
-            fprintf(archivo,"</a>"
-            "<h3>"
+            fprintf(archivo,"</a>\n"
+            "<h3>\n"
             "<a href='#'>%s", peliculas[i].titulo);
-            fprintf(archivo, "</a>"
-            "</h3>"
-            "<ul>"
+            fprintf(archivo, "</a>\n"
+            "</h3>\n"
+            "<ul>\n"
             "<li>Género:%s", peliculas[i].genero);
-            fprintf(archivo, "</li>"
+            fprintf(archivo, "</li>\n"
             "<li>Puntaje:%d", peliculas[i].puntaje);
-            fprintf(archivo, "</li>"
+            fprintf(archivo, "</li>\n"
             "<li>Duración:%d", peliculas[i].duracion);
-            fprintf(archivo, "</li>"
-            "</ul>"
+            fprintf(archivo, "</li>\n"
+            "</ul>\n"
             "<p>%s", peliculas[i].descripcion);
-            fprintf(archivo, "</p>"
-            "</article>"
-            "<!-- Repetir esto para cada pelicula →");
+            fprintf(archivo, "</p\n"
+            "</article>\n"
+            "<!-- Repetir esto para cada pelicula -->\n");
         }
+
+        fprintf(archivo, " </div>\n"
+        "<!-- /.row -->\n"
+        "</div>\n"
+        "<!-- /.container -->\n"
+        "<!-- jQuery -->\n"
+        "<script src='js/jquery-1.11.3.min.js'></script>\n"
+        "<!-- Bootstrap Core JavaScript -->\n"
+        "<script src='js/bootstrap.min.js'></script>\n"
+        "<!-- IE10 viewport bug workaround -->\n"
+        "<script src='js/ie10-viewport-bug-workaround.js'></script>\n"
+        "<!-- Placeholder Images -->\n"
+        "<script src='js/holder.min.js'></script>\n"
+        "</body>\n"
+        "</html>\n");
+
         fclose(archivo);
 
         printf("Se ha guardado en un html exitosamente\n");
+    }
+    else
+    {
+        printf("No se pudieron guardar las peliculas\n");
     }
 
 }
@@ -285,7 +331,7 @@ int parseDatos(char* nombreArchivo, EMovie* peliculas, int tam)
     FILE* archivo;
     int r;
     int i = 0;
-    char var1[100];
+    char var1[150];
     char var2[50];
     char var3[50];
     int var4;
@@ -301,7 +347,7 @@ int parseDatos(char* nombreArchivo, EMovie* peliculas, int tam)
 
     do
     {
-         r = fscanf(archivo,"%[^,],%[^,],%[^,],%d,%d,%[^.].", var1, var2, var3, &var4, &var5, var6);
+         r = fscanf(archivo,"%[^*]*%[^*]*%[^*]*%d*%d*%[^#]#", var1, var2, var3, &var4, &var5, var6);
          if(r == 6)
         {
             strcpy(peliculas[i].linkImagen, var1);
@@ -317,7 +363,7 @@ int parseDatos(char* nombreArchivo, EMovie* peliculas, int tam)
             break;
         }
 
-    }while(!feof(archivo));
+    }while(!feof(archivo) && i<tam);
 
     fclose(archivo);
 

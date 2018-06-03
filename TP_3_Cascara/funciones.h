@@ -8,7 +8,7 @@ typedef struct
     int duracion;
     char descripcion[100];
     int puntaje;
-    char linkImagen[100];
+    char linkImagen[150];
 }EMovie;
 
 
@@ -24,7 +24,7 @@ int agregarPelicula(EMovie movie, int);
  *  @param movie la estructura a ser eliminada al archivo
  *  @return retorna 1 o 0 de acuerdo a si pudo eliminar la pelicula o no
  */
-void borrarPelicula(EMovie movie, int);
+int borrarPelicula(EMovie movie, int);
 
 void modificarPelicula(EMovie, int);
 
