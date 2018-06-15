@@ -106,10 +106,9 @@ int al_deleteArrayList(ArrayList* this)
 
     if(this != NULL)
     {
-
+        free(this);
         returnAux = 0;
     }
-
 
     return returnAux;
 }
@@ -145,7 +144,7 @@ void* al_get(ArrayList* this, int index)
 
     if(this != NULL && (index < tam && index > -1))
     {
-        returnAux =  (this + index)->pElements;
+        returnAux =  *(this->pElements + index);
     }
 
     return returnAux;
@@ -180,7 +179,6 @@ int al_contains(ArrayList* this, void* pElement)
         }
 
     }
-
 
     return returnAux;
 }
@@ -230,6 +228,12 @@ int al_set(ArrayList* this, int index,void* pElement)
 int al_remove(ArrayList* this,int index)
 {
     int returnAux = -1;
+    int tam = al_len(this);
+
+    if(this != NULL && (index < tam && index > -1))
+    {
+        returnAux = contract(this, index);
+    }
 
     return returnAux;
 }
@@ -244,6 +248,26 @@ int al_remove(ArrayList* this,int index)
 int al_clear(ArrayList* this)
 {
     int returnAux = -1;
+    int i;
+    int tam = al_len(this);
+    void** aux;
+
+    if(this != NULL)
+    {
+        aux = (void**) realloc(this->pElements, sizeof(void*) * AL_INCREMENT);
+
+        if(aux != NULL)
+        {
+            this->pElements = aux;
+            this->reservedSize = AL_INCREMENT;
+            this->size = 0;
+            returnAux = 0;
+        }
+
+        returnAux = 0;
+    }
+
+
 
     return returnAux;
 }
@@ -392,6 +416,8 @@ int resizeUp(ArrayList* this)
     return returnAux;
 }
 
+
+
 /** \brief  Expand an array list
  * \param pList ArrayList* Pointer to arrayList
  * \param index int Index of the element
@@ -414,6 +440,18 @@ int expand(ArrayList* this,int index)
 int contract(ArrayList* this,int index)
 {
     int returnAux = -1;
+    int i;
+    int tam = al_len(this);
+
+    if(this != NULL && (index < tam && index > -1))
+    {
+        for(i=index;i<tam-1;i++)
+        {
+            *(this->pElements + i) = *(this->pElements + (i+1));
+        }
+        returnAux = 0;
+        this->size--;
+    }
 
     return returnAux;
 }
