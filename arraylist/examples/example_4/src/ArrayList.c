@@ -141,6 +141,12 @@ int al_len(ArrayList* this)
 void* al_get(ArrayList* this, int index)
 {
     void* returnAux = NULL;
+    int tam = al_len(this);
+
+    if(this != NULL && (index < tam && index > -1))
+    {
+        returnAux =  (this + index)->pElements;
+    }
 
     return returnAux;
 }
