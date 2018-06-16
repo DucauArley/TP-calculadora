@@ -203,7 +203,8 @@ int al_set(ArrayList* this, int index,void* pElement)
         {
             if(index == tam)
             {
-                al_add(this, pElement);
+                this->add(this, pElement);
+                //al_add(this, pElement); Es lo mismo
                 returnAux = 0;
             }
             else
@@ -248,8 +249,6 @@ int al_remove(ArrayList* this,int index)
 int al_clear(ArrayList* this)
 {
     int returnAux = -1;
-    int i;
-    int tam = al_len(this);
     void** aux;
 
     if(this != NULL)
@@ -263,8 +262,6 @@ int al_clear(ArrayList* this)
             this->size = 0;
             returnAux = 0;
         }
-
-        returnAux = 0;
     }
 
 
@@ -282,6 +279,16 @@ int al_clear(ArrayList* this)
 ArrayList* al_clone(ArrayList* this)
 {
     ArrayList* returnAux = NULL;
+    int tam = al_len(this);
+
+    if(this != NULL)
+    {
+        returnAux = (ArrayList*) malloc(sizeof(ArrayList) * tam);
+        if(returnAux != NULL)
+        {
+            returnAux = this;
+        }
+    }
 
     return returnAux;
 }
@@ -299,7 +306,14 @@ ArrayList* al_clone(ArrayList* this)
 int al_push(ArrayList* this, int index, void* pElement)
 {
     int returnAux = -1;
+    int tam = this->len(this);
 
+    if(this != NULL && (index < tam && index > -1))
+    {
+        returnAux = expand(this, index);
+
+        *(this->pElements + index) = pElement;
+    }
     return returnAux;
 }
 
@@ -329,7 +343,6 @@ int al_isEmpty(ArrayList* this)
 
     return returnAux;
 }
-
 
 
 
@@ -427,6 +440,19 @@ int resizeUp(ArrayList* this)
 int expand(ArrayList* this,int index)
 {
     int returnAux = -1;
+    int i;
+    int tam = this->len(this);
+
+    if(this != NULL && (index < tam && index > -1))
+    {
+        for(i=tam;i>index;i--)
+        {
+            *(this->pElements + i) = *(this->pElements + (i-1));
+        }
+        returnAux = 0;
+        this->size++;
+    }
+
 
     return returnAux;
 }
@@ -441,7 +467,7 @@ int contract(ArrayList* this,int index)
 {
     int returnAux = -1;
     int i;
-    int tam = al_len(this);
+    int tam = this->len(this);
 
     if(this != NULL && (index < tam && index > -1))
     {
