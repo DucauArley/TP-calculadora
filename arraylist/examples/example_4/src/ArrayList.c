@@ -387,6 +387,14 @@ int al_isEmpty(ArrayList* this)
 void* al_pop(ArrayList* this,int index)
 {
     void* returnAux = NULL;
+    int tam = al_len(this);
+
+    if(this != NULL && (index > -1 && index < tam))
+    {
+        returnAux = *(this->pElements + index);
+
+        contract(this, index);
+    }
 
     return returnAux;
 }
@@ -402,7 +410,22 @@ void* al_pop(ArrayList* this,int index)
  */
 ArrayList* al_subList(ArrayList* this,int from,int to)
 {
-    void* returnAux = NULL;
+    ArrayList* returnAux = NULL;
+    int tam = al_len(this);
+    int i;
+
+    if(this != NULL && from < to && from > -1 && to <= tam)
+    {
+        returnAux = al_newArrayList();
+
+        if(returnAux != NULL)
+        {
+            for(i=from;i<=to;i++)
+            {
+                al_add(returnAux, al_get(this, i));
+            }
+        }
+    }
 
     return returnAux ;
 }
@@ -420,6 +443,24 @@ ArrayList* al_subList(ArrayList* this,int from,int to)
 int al_containsAll(ArrayList* this,ArrayList* this2)
 {
     int returnAux = -1;
+    int i;
+    int tam = al_len(this);
+
+    if(this != NULL && this2 != NULL)
+    {
+        returnAux = 1;
+
+        for(i=0;i<tam;i++)
+        {
+            if(*(this->pElements + i) != *(this2->pElements + i))
+            {
+                returnAux = 0;
+                break;
+            }
+        }
+
+    }
+
 
     return returnAux;
 }
@@ -434,6 +475,12 @@ int al_containsAll(ArrayList* this,ArrayList* this2)
 int al_sort(ArrayList* this, int (*pFunc)(void* ,void*), int order)
 {
     int returnAux = -1;
+
+    if(this != NULL)
+    {
+
+        returnAux = 0;
+    }
 
     return returnAux;
 }
