@@ -306,13 +306,20 @@ ArrayList* al_clone(ArrayList* this)
 int al_push(ArrayList* this, int index, void* pElement)
 {
     int returnAux = -1;
-    int tam = this->len(this);
+    int tam = al_len(this);
 
-    if(this != NULL && (index < tam && index > -1))
+    if(this != NULL && (index <= tam && index > -1))
     {
-        returnAux = expand(this, index);
+        if(index == tam)
+        {
+            al_add(this, pElement);
+        }
+        else
+        {
+            returnAux = expand(this, index);
 
-        *(this->pElements + index) = pElement;
+            *(this->pElements + index) = pElement;
+        }
     }
     return returnAux;
 }
@@ -327,6 +334,20 @@ int al_push(ArrayList* this, int index, void* pElement)
 int al_indexOf(ArrayList* this, void* pElement)
 {
     int returnAux = -1;
+    int i;
+    int tam = al_len(this);
+
+    if(this != NULL)
+    {
+        for(i=0;i<tam;i++)
+        {
+            if(*(this->pElements + i) == pElement)
+            {
+                returnAux = i;
+                break;
+            }
+        }
+    }
 
     return returnAux;
 }
@@ -340,6 +361,17 @@ int al_indexOf(ArrayList* this, void* pElement)
 int al_isEmpty(ArrayList* this)
 {
     int returnAux = -1;
+    int tam = al_len(this);
+
+    if(this != NULL)
+    {
+        returnAux = 0;
+
+        if(tam == 0)
+        {
+            returnAux = 1;
+        }
+    }
 
     return returnAux;
 }
@@ -441,7 +473,7 @@ int expand(ArrayList* this,int index)
 {
     int returnAux = -1;
     int i;
-    int tam = this->len(this);
+    int tam = al_len(this);
 
     if(this != NULL && (index < tam && index > -1))
     {
@@ -467,7 +499,7 @@ int contract(ArrayList* this,int index)
 {
     int returnAux = -1;
     int i;
-    int tam = this->len(this);
+    int tam = al_len(this);
 
     if(this != NULL && (index < tam && index > -1))
     {
