@@ -264,8 +264,6 @@ int al_clear(ArrayList* this)
         }
     }
 
-
-
     return returnAux;
 }
 
@@ -475,10 +473,38 @@ int al_containsAll(ArrayList* this,ArrayList* this2)
 int al_sort(ArrayList* this, int (*pFunc)(void* ,void*), int order)
 {
     int returnAux = -1;
+    int i;
+    int j;
+    int tam = al_len(this);
+    void* aux;
 
-    if(this != NULL)
+    if(this != NULL && pFunc != NULL && (order == 1 || order == 0))
     {
+        for(i=0;i<tam-1;i++)
+        {
+            for(j=i+1;j<tam;j++)
+            {
+                if(order == 1)
+                {
+                    if(pFunc(*(this->pElements + i), *(this->pElements + j)) == 1)
+                    {
+                        aux = *(this->pElements + j);
+                        *(this->pElements + j) = *(this->pElements + i);
+                        *(this->pElements + i) = aux;
+                    }
+                }
+                else
+                {
+                    if(pFunc(*(this->pElements + i), *(this->pElements + j)) == -1)
+                    {
+                        aux = *(this->pElements + i);
+                        *(this->pElements + i) = *(this->pElements + j);
+                        *(this->pElements + j) = aux;
+                    }
+                }
+            }
 
+        }
         returnAux = 0;
     }
 
